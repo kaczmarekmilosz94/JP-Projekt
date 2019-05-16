@@ -1,0 +1,8 @@
+DURATION: 100s
+
+No.||   Name   || Position || Velocity || Mass  || Collisions
+
+1. || Sun      ||  20,20   ||   1,0    || 50000 || No
+2. || Earth    ||  20,6    ||   50,0   ||  10   || Mars(in 51s)
+3. || Jupiter  ||  26,30   ||   9,12   ||  16   || No
+4. || Mars     ||  12,12   ||   25,78  ||  7    || Earth(in 51s)
