@@ -1,0 +1,14 @@
+//size = amount of elements 
+//
+//duration = time of simulation in seconds
+//
+//list of elements -
+//
+//elementName = {name, {positionX, positionY}, [velocityX, velocityY}, mass}
+//              [string, [double, double], [double,double],double]
+
+
+size = 2; //amount of elements 
+duration = 100
+planet1 = { "Sun ",{ 20,20 },{ 0,0 }, 50000 };
+planet2 = { "Earth",{ 20,12 },{ 50,0 }, 10 };
