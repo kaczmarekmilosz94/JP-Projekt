@@ -1,4 +1,12 @@
-size = 2; //amount of elements 
-duration = 100
-planet1 = { "Sun ",{ 20,20 },{ 0,0 }, 50000 };
-planet2 = { "Earth",{ 20,12 },{ 50,0 }, 10 };
+{
+  size: 2; 
+  duration: 100;
+  
+  objects: 
+  {
+    {"Sun ",{ 20,20 },{ 0,0 }, 50000 };
+    {"Earth",{ 20,12 },{ 50,0 }, 10 };
+    {"Jupiter",{ 20,12 },{ 50,0 }, 16 };
+    {"Mars",{ 20,12 },{ 50,0 }, 7 };
+  }
+}
