@@ -1,9 +1,11 @@
-#include <stdafx.h>
 #include <stdio.h>
 #include <math.h>
 #include <windows.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <SDL.h>
+
+#undef main
 
 typedef struct Position {
 	double x;
@@ -28,6 +30,7 @@ typedef struct Planet {
 	position position;
 	velocity velocity;
 	double mass;
+	int radius;
 }planet;
 
 static double G = 6.6726 * pow(10, -1);
@@ -41,48 +44,21 @@ char map[50][100];
 
 double t = 0;
 
-/*
-void Verlet(double t, double dt, double r, double r2, double a)
-{
-if (t < 20)
-{
-double r3 = r2;
+int PollEventsForQuit() {
+	SDL_Event e;
 
-r2 = r;
+	while (SDL_PollEvent(&e))
+	{
+		switch (e.type)
+		{
+		case SDL_QUIT: return 1;
+		case SDL_KEYDOWN: if (e.key.keysym.sym == SDLK_ESCAPE) 	return 1;
+			break;
+		}
+	}
 
-r = 2 * r2 - r3 + a * dt * dt;
-
-
-t = t + dt;
-
-printf("t: %lf   r: %lf\n", t, r);
-
-Verlet(t, dt, r, r2, a);
+	return 0;
 }
-}
-void Euler(double t, double dt, double r, double r2, double a, double v)
-{
-v = v + a * dt ;
-r = r + v * dt;
-
-t = t + dt;
-
-if (t < 2000*dt)
-{
-r2 = r;
-
-printf("t: %lf   v: %lf  r: %lf   E\n", t, v, r);
-
-Euler(t, dt, r, r2, a, v);
-}
-else
-{
-printf("t: %lf   r: %lf  E\n", t, r);
-
-Verlet(t, dt, r, r2, a);
-}
-}
-*/
 
 planet Euler(planet planet, force force)
 {
@@ -134,11 +110,11 @@ force Gravity(planet planet1, planet planets[10], int size)
 	return final_force;
 }
 
-void PrintPosition(planet planets[10], int size)
+void PrintPosition(planet planets[10], int size, SDL_Renderer *renderer)
 {
 	system("@cls||clear");
 
-	int i, j;
+	int i,j;
 
 	printf("TIME: %0.2f \n", t);
 
@@ -154,15 +130,28 @@ void PrintPosition(planet planets[10], int size)
 
 	for (i = 0; i < size; i++)
 	{
-		map[(int)planets[i].position.y][2 * (int)planets[i].position.x] = 'O';
+		/*map[(int)planets[i].position.y][2 * (int)planets[i].position.x] = 'O';
 
 		map[(int)planets[i].position.y + 1][(2 * (int)planets[i].position.x) + 2] = planets[i].name[0];
 		map[(int)planets[i].position.y + 1][(2 * (int)planets[i].position.x) + 3] = planets[i].name[1];
 		map[(int)planets[i].position.y + 1][(2 * (int)planets[i].position.x) + 4] = planets[i].name[2];
-		map[(int)planets[i].position.y + 1][(2 * (int)planets[i].position.x) + 5] = planets[i].name[3];
+		map[(int)planets[i].position.y + 1][(2 * (int)planets[i].position.x) + 5] = planets[i].name[3];*/
+
+
+		SDL_Rect srcrect;
+
+		srcrect.x = (int)planets[i].position.x;
+		srcrect.y = (int)planets[i].position.y;
+		srcrect.w = planets[i].radius;
+		srcrect.h = planets[i].radius;
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+		SDL_RenderFillRect(renderer, &srcrect);
+
+		SDL_RenderPresent(renderer);
 	}
 
-	for (i = 0; i < map_size_x; i++)
+	/*for (i = 0; i < map_size_x; i++)
 	{
 		for (j = 0; j < map_size_y; j++)
 		{
@@ -179,10 +168,12 @@ void PrintPosition(planet planets[10], int size)
 		map[(int)planets[i].position.y + 1][(2 * (int)planets[i].position.x) + 3] = ' ';
 		map[(int)planets[i].position.y + 1][(2 * (int)planets[i].position.x) + 4] = ' ';
 		map[(int)planets[i].position.y + 1][(2 * (int)planets[i].position.x) + 5] = ' ';
-	}
+	}*/
+
+		
 }
 
-planet* SetMovement(planet *planets, int size)
+planet* SetMovement(planet *planets, int size, SDL_Renderer *renderer)
 {
 	planet current_planets[10];
 
@@ -198,7 +189,7 @@ planet* SetMovement(planet *planets, int size)
 		planets[i] = Euler(planets[i], Gravity(planets[i], current_planets, size));
 	}
 
-	PrintPosition(planets, size);
+	PrintPosition(planets, size, renderer);
 
 	t += dt;
 
@@ -208,11 +199,13 @@ planet* SetMovement(planet *planets, int size)
 }
 
 
-void Controller(planet* planets, int size)
+void Controller(planet* planets, int size, SDL_Renderer *renderer)
 {
 	while (!_kbhit())
 	{
-		planets = SetMovement(planets, size);
+		if (PollEventsForQuit()) break;
+
+		planets = SetMovement(planets, size, renderer);
 	}
 }
 
@@ -222,6 +215,26 @@ int main()
 {
 	printf("Start\n");
 
+
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) != 0) {
+		return -1;
+	}
+
+	SDL_Window *win = SDL_CreateWindow("Space", 760, 340, 400, 400, SDL_WINDOW_SHOWN);
+
+	if (win == NULL) {
+		return -1;
+	}
+
+	SDL_Renderer *renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+
+	if (renderer == NULL) 	{
+		SDL_DestroyWindow(win);
+		SDL_Quit();
+
+		return -1;
+	}
+
 	for (int i = 0; i < map_size_x; i++)
 	{
 		for (int j = 0; j < map_size_y; j++)
@@ -230,17 +243,29 @@ int main()
 		}
 	}
 
-	planet planet1 = { "Sun ",{ 20,20 },{ 0,0 }, 50000 };
+	planet planet1 = { "Sun ",{ 100,100 },{ 0,0 }, 100000, 40};
 	planet planet2 = { "Earth",{ 20,12 },{ 50,0 }, 10 };
 	planet planet3 = { "Venus",{ 18,18 },{ 0,0 }, 50000 };
-	planet planet4 = { "Merc ",{ 10,6 },{ 30,0 }, 10 };
+	planet planet4 = { "Merc ",{ 10,6 },{ 30,0 }, 10, 5 };
 
 	int size = 2;
 
 
-	planet planets[10] = { planet3, planet4 };
+	planet planets[10] = { planet1, planet4 };
 
-	Controller(planets, size);
+	
+	while (1 == 1) {
+		
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+
+		Controller(planets, size, renderer);
+		
+	}
+
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(win);
+	SDL_Quit();
 
 	return 0;
 }
