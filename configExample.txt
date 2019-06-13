@@ -4,8 +4,8 @@
 //
 //list of elements -
 //
-//elementName = {name, {positionX, positionY}, [velocityX, velocityY}, mass}
-//              [string, [double, double], [double,double],double]
+//elementName = {name, {positionX, positionY}, [velocityX, velocityY}, mass, radius, color(r,g,b,a)}
+//              [string, [double, double], [double,double],double, double, [int,int,int,int]
 
 Ex:
 {
