@@ -1,9 +1,9 @@
-#The Gravity Simulator
+# The Gravity Simulator
 
 ##Simulator of gravitational interaction.
 The program allows you to create objects that can represent astronomical object and see how they interact with each other in 2D space.
 
-###Programming language: C
+### Programming language: C
 
 Used libraries: 
  <stdio.h>
@@ -14,7 +14,7 @@ Used libraries:
 
 Program needs confing file that consits:
 
-###Simulation setting:
+### Simulation setting:
 	- time step
 	- amount of objects
 	- duration
@@ -22,7 +22,7 @@ Program needs confing file that consits:
 	- array of objects
 
 
-###Every object has to be described with given values:
+### Every object has to be described with given values:
 	- name
 	- position X
 	- position Y
