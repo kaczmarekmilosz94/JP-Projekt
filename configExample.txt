@@ -1,3 +1,5 @@
+//step = delta time 
+//
 //size = amount of elements 
 //
 //duration = time of simulation in seconds
