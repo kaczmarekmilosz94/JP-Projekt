@@ -1,12 +1,13 @@
 {
-  size: 2; 
-  duration: 100;
+  step: //delta time
+  size: //amount of objects to use
+  duration: //duration of simulation
+  trace: // trace on = 1/off= = 0
   
-  objects: 
-  {
-    {"Sun ",{ 20,20 },{ 0,0 }, 50000 };
-    {"Earth",{ 20,12 },{ 50,0 }, 10 };
-    {"Jupiter",{ 20,12 },{ 50,0 }, 16 };
-    {"Mars",{ 20,12 },{ 50,0 }, 7 };
-  }
+  object: {,name,posX,posY,velocityX,velocityY,mass,radius,r,g,b,a,}
+  string, double, double, double, double, double, int, int, int, int, int
+  
+  object: ...
+	
+  
 }
