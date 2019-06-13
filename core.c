@@ -2,8 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #pragma warning(disable:4996)
 
@@ -157,15 +156,15 @@ force Gravity(planet planet1, planet planets[10], int size)
 				pow(x, 2) +
 				pow(y, 2)));
 
-			if (distance <= (planet1.radius + planets[i].radius)) 
+			if (distance <= (planet1.radius + planets[i].radius))
 			{
 				int j;
 
-				for (j = 0; j < size; j++) 
+				for (j = 0; j < size; j++)
 				{
-					if ((strcmp(planet1.name, main_planets[j].name) == 0)) 
+					if ((strcmp(planet1.name, main_planets[j].name) == 0))
 					{
-						if (main_planets[j].collisions_count == 0) 
+						if (main_planets[j].collisions_count == 0)
 						{
 							collision col = { planets[i].name, t };
 							main_planets[j].collisions[0] = col;
@@ -173,13 +172,13 @@ force Gravity(planet planet1, planet planets[10], int size)
 						}
 						else
 						{
-							if (t - main_planets[j].collisions[main_planets[j].collisions_count - 1].time > 5) 
+							if (t - main_planets[j].collisions[main_planets[j].collisions_count - 1].time > 5)
 							{
 								collision col = { planets[i].name, t };
 								main_planets[j].collisions[main_planets[j].collisions_count] = col;
 								main_planets[j].collisions_count++;
 							}
-						}						
+						}
 						break;
 					}
 				}
@@ -206,11 +205,11 @@ void PrintPosition(planet planets[10], int size, SDL_Renderer * renderer, int tr
 {
 	system("@cls||clear");
 
-	int i,j;
+	int i, j;
 
 	printf("TIME: %0.2f \n", t);
 
-	
+
 
 
 
@@ -237,16 +236,16 @@ void PrintPosition(planet planets[10], int size, SDL_Renderer * renderer, int tr
 		DrawCircle(renderer, (int)planets[i].position.x, (int)planets[i].position.y, (int)planets[i].radius, planets[i].color);
 	}
 
-	if (t >= duration) 
+	if (t >= duration)
 	{
-		FILE *fp; 
+		FILE *fp;
 
-		if ((fp = fopen("result.txt", "w")) == NULL) 
-		{			
+		if ((fp = fopen("result.txt", "w")) == NULL)
+		{
 			exit(1);
 		}
-		fprintf(fp, "DURATION: %f\n\n", duration); 
-		fprintf(fp, "     Name     ||   Position   ||   Velocity   ||    Mass    ||    Collisions\n"); 
+		fprintf(fp, "DURATION: %f\n\n", duration);
+		fprintf(fp, "     Name     ||   Position   ||   Velocity   ||    Mass    ||    Collisions\n");
 
 		for (i = 0; i < size; i++)
 		{
@@ -261,13 +260,13 @@ void PrintPosition(planet planets[10], int size, SDL_Renderer * renderer, int tr
 			{
 				int k;
 
-				for (k = 0; k < planets[i].collisions_count; k++) 
+				for (k = 0; k < planets[i].collisions_count; k++)
 				{
 					fprintf(fp, " %s(in %0.2f) | ", planets[i].collisions[k].name, planets[i].collisions[k].time);
 				}
 				fprintf(fp, "\n");
 			}
-			else 
+			else
 			{
 				fprintf(fp, "\n");
 			}
@@ -275,7 +274,7 @@ void PrintPosition(planet planets[10], int size, SDL_Renderer * renderer, int tr
 
 
 
-		fclose(fp); 
+		fclose(fp);
 
 		exit(0);
 	}
@@ -308,7 +307,7 @@ planet* SetMovement(planet * planets, int size, SDL_Renderer * renderer, int tra
 
 void Controller(planet * planets, int size, SDL_Renderer * renderer, int tracer)
 {
-	while (!_kbhit())
+	while (1==1)
 	{
 		if (PollEventsForQuit()) break;
 
@@ -317,7 +316,7 @@ void Controller(planet * planets, int size, SDL_Renderer * renderer, int tracer)
 }
 
 
-planet GetPlanet(char setts[1024]) 
+planet GetPlanet(char setts[1024])
 {
 	char name[15];
 	double x;
@@ -330,7 +329,7 @@ planet GetPlanet(char setts[1024])
 	int g;
 	int b;
 	int a;
-	
+
 	int i = 0;
 
 	int init_size = strlen(setts);
@@ -358,7 +357,7 @@ planet GetPlanet(char setts[1024])
 		i++;
 	}
 
-	 
+
 	position pos = { x,y };
 	velocity vel = { vx,vy };
 	color col = { r,g,b,a };
@@ -402,32 +401,32 @@ int main()
 
 
 	char x[1024];
-	int key_id=0;
+	int key_id = 0;
 	/* assumes no word exceeds length of 1023 */
-	while (fscanf(fp, " %1023s", x) == 1) 
+	while (fscanf(fp, " %1023s", x) == 1)
 	{
 		switch (key_id)
 		{
 		case 1:
-			printf("size: %s\n", x); 
+			printf("size: %s\n", x);
 			size = atoi(x);
 			key_id = 0;
 			break;
-		case 2: 
+		case 2:
 			printf("duration: %s\n", x);
 			duration = atof(x);
 			key_id = 0;
 			break;
-		case 3: 
+		case 3:
 			printf("trace: %s\n", x);
 			tracer = atoi(x);
 			key_id = 0;
 			break;
 		case 4:
-			printf("object: %s\n", x); 
+			printf("object: %s\n", x);
 			main_planets[id] = GetPlanet(x);
 			id++;
-			key_id = 0; 
+			key_id = 0;
 			break;
 		case 5:
 			printf("step: %s\n", x);
@@ -444,48 +443,48 @@ int main()
 		if (strcmp(x, "object:") == 0) key_id = 4;
 		if (strcmp(x, "step:") == 0) key_id = 5;
 	}
-		
+
 
 	fclose(fp);
-	
+
 	while (1 == 0) {}
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) != 0) {
-	return -1;
+		return -1;
 	}
 
 	SDL_Window* win = SDL_CreateWindow("Space", 760, 340, 1000, 1000, SDL_WINDOW_SHOWN);
 
 	if (win == NULL) {
-	return -1;
+		return -1;
 	}
 
 	SDL_Renderer* renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
 
 	if (renderer == NULL) {
-	SDL_DestroyWindow(win);
-	SDL_Quit();
+		SDL_DestroyWindow(win);
+		SDL_Quit();
 
-	return -1;
+		return -1;
 	}
 
 	for (int i = 0; i < map_size_x; i++)
 	{
-	for (int j = 0; j < map_size_y; j++)
-	{
-	map[i][j] = ' ';
+		for (int j = 0; j < map_size_y; j++)
+		{
+			map[i][j] = ' ';
+		}
 	}
-	}
 
 
 
-	while (1==1) {
+	while (1 == 1) {
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
 
 
-	Controller(main_planets, size, renderer, tracer, duration);
+		Controller(main_planets, size, renderer, tracer, duration);
 
 	}
 
